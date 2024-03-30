@@ -1,0 +1,21 @@
+.dashboard-parent {
+  position: relative;
+  top: 15vh;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 0.5rem;
+}
+.grid-item {
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  color: #333;
+}
+
+.grid-item a {
+  text-decoration: none;
+  color: #333;
+}

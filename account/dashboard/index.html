@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../../styles/headfoot.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="icon" href="../../img/CMFASLogo.png" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="dropdown-parent-2">
+        <div class="dropdown-2">
+          <button class="hamburger hamburger--collapse" type="button">
+            <span class="hamburger-box">
+              <span class="hamburger-inner"></span>
+            </span>
+          </button>
+          <div class="dropdown-content-2">
+            <a href="#">Free Trial Questions</a>
+            <a href="#">Practice</a>
+            <a href="../../modules/">Modules</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="head-top">
+        <div class="logo">
+          <a href="../../index.html">
+            <img src="../../img/CMFASLogo.svg" alt="CMFAS Logo" />
+          </a>
+        </div>
+        <div class="header-info">
+          <a class="header-a" href="#">Free Trial Questions</a>
+          <a class="header-a" href="#">Practice</a>
+          <a class="header-a" href="../../modules/">Modules</a>
+          <div class="dropdown-parent">
+            <div class="dropdown">
+              <button><i class="fa-solid fa-user"></i></button>
+              <div class="dropdown-content">
+                <a href="./index.html">Dashboard</a>
+                <a href="#">Subscription</a>
+                <a href="#">Settings</a>
+                <a href="../../modules/res5/test/">Profile</a>
+                <a href="../login/">Login</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- End Header -->
+    <!-- Dashboard -->
+    <div class="dashboard-parent">
+      <!-- Modules -->
+      <div id="grid-container" class="grid-container">
+        <div id="grid-header" class="grid-item">Modules</div>
+        <div id="grid-header"  class="grid-item">Practice</i></div>
+        
+        <!-- Items -->
+        
+        </div>
+        <!-- Items -->
+      </div>
+      <!-- End Modules -->
+    </div>
+    <!-- End Dashboard -->
+
+    <script
+      src="https://kit.fontawesome.com/75cb04a6d4.js"
+      crossorigin="anonymous"
+    ></script>
+
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getFirestore, collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD8Te-4z4I1Ch4x4k0LQRe-67FfGJmq8rk",
+        authDomain: "cmfas-8ed61.firebaseapp.com",
+        projectId: "cmfas-8ed61",
+        storageBucket: "cmfas-8ed61.appspot.com",
+        messagingSenderId: "67363622843",
+        appId: "1:67363622843:web:15ac4a9e5d216072d7be9e",
+        measurementId: "G-7NJL4QTFYY",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    console.log("Firebase initialized:", app); // Logging app object to check if it's defined
+    const auth = getAuth();
+
+
+    // Wait for Firebase authentication to resolve
+    auth.onAuthStateChanged(async function (user) {
+        if (user) {
+            var userUid = user.uid;
+
+            // Access Firestore collections once authenticated
+            const db = getFirestore(app);
+            const userRef = doc(db, "users", userUid);
+
+            try {
+                const userSnapshot = await getDoc(userRef);
+                
+                if (userSnapshot.exists()) {
+                    const purchasedModulesRefs = userSnapshot.data().purchasedModules;
+                    
+                    // Fetch module data for purchased modules
+                    const modulesPromises = purchasedModulesRefs.map(async (moduleRef) => {
+                        const moduleSnapshot = await getDoc(moduleRef);
+                        return moduleSnapshot.data();
+                    });
+                    
+                    const modulesData = await Promise.all(modulesPromises);
+                    
+                    // Display modules as grid items
+                    const gridContainer = document.getElementById("grid-container");
+                    modulesData.forEach(moduleData => {
+                      const moduleElement = document.createElement("p");
+                      moduleElement.classList.add("grid-item");
+                      moduleElement.innerHTML = `${moduleData.name} - <a href =${moduleData.path}><i class="fa-solid fa-play"></i></a>`; // Concatenating name and path with a separator
+                      gridContainer.appendChild(moduleElement);
+                      });
+
+                } else {
+                    console.log("User document not found!");
+                }
+            } catch (error) {
+                console.log("Error getting user document:", error);
+            }
+        } else {
+            // Handle case where user is not authenticated
+            window.location.href = "../login/";
+        }
+    });
+</script>
+
+
+
+  </body>
+</html>

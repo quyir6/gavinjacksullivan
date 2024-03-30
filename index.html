@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account</title>
+    <link rel="stylesheet" href="../../styles/headfoot.css" />
+    <link rel="stylesheet" href="./create.css" />
+    <link rel="icon" href="../../img/CMFASLogo.png" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="dropdown-parent-2">
+        <div class="dropdown-2">
+          <button class="hamburger hamburger--collapse" type="button">
+            <span class="hamburger-box">
+              <span class="hamburger-inner"></span>
+            </span>
+          </button>
+          <div class="dropdown-content-2">
+            <a href="#">Free Trial Questions</a>
+            <a href="#">Practice</a>
+            <a href="../../modules/">Modules</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="head-top">
+        <div class="logo">
+          <a href="../../index.html">
+            <img src="../../img/CMFASLogo.svg" alt="CMFAS Logo" />
+          </a>
+        </div>
+        <div class="header-info">
+          <a class="header-a" href="#">Free Trial Questions</a>
+          <a class="header-a" href="#">Practice</a>
+          <a class="header-a" href="../../modules/">Modules</a>
+          <div class="dropdown-parent">
+            <div class="dropdown">
+              <button><i class="fa-solid fa-user"></i></button>
+              <div class="dropdown-content">
+                <a href="../dashboard/">Dashboard</a>
+                <a href="#">Subscription</a>
+                <a href="#">Settings</a>
+                <a href="#">Profile</a>
+                <a href="../login/">Login</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- End Header -->
+
+    <!-- Create Account -->
+    <div class="form_container">
+      <h2>Create Account</h2>
+      <form id="create-account-form">
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Name"
+          class="input_box"
+          required
+        />
+
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          class="input_box"
+          required
+        />
+
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          class="input_box"
+          required
+        />
+
+        <button type="submit" class="button">Submit</button>
+      </form>
+      <div class="login_signup">
+        Already have an account? <a href="../login/" id="login">Login</a>
+      </div>
+    </div>
+    <!-- End Create Account -->
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyD8Te-4z4I1Ch4x4k0LQRe-67FfGJmq8rk",
+        authDomain: "cmfas-8ed61.firebaseapp.com",
+        projectId: "cmfas-8ed61",
+        storageBucket: "cmfas-8ed61.appspot.com",
+        messagingSenderId: "67363622843",
+        appId: "1:67363622843:web:15ac4a9e5d216072d7be9e",
+        measurementId: "G-7NJL4QTFYY",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth();
+
+      const form = document.getElementById("create-account-form");
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const displayName = document.getElementById("name").value; // Get the name from the form
+
+        // Create the user with email and password
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // User created successfully
+            const user = userCredential.user;
+            console.log("User created:", user);
+            // Store user information in Firestore
+            return fetch("/createUserDocument", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                uid: user.uid,
+                email: email,
+                displayName: displayName,
+              }),
+            });
+          })
+          .then(() => {
+            // Redirect user or show success message
+            window.location.href = "../login";
+          })
+          .catch((error) => {
+            // Handle errors here
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Error:", errorMessage);
+            // Display error message to the user
+          });
+      });
+    </script>
+
+    <script
+      src="https://kit.fontawesome.com/75cb04a6d4.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

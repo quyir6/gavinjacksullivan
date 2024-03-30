@@ -1,0 +1,15 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Restrict access to documents based on user ID
+    match /example_collection/{document} {
+      allow read, write: if request.auth.uid == 'BzAuZ7wSjJPRZnFMkus8CFkLlJ13';
+    }
+    
+    // Allow access to other documents for authenticated users
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

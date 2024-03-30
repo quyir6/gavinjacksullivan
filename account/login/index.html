@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../../styles/headfoot.css">
+  <link rel="stylesheet" href="./login.css">
+  <link rel="icon" href="../../img/CMFASLogo.png">
+</head>
+<body>
+<!-- Header -->
+<header>
+  <div class="dropdown-parent-2">
+    <div class="dropdown-2">
+      <button class="hamburger hamburger--collapse" type="button">
+        <span class="hamburger-box">
+          <span class="hamburger-inner"> </span>
+        </span>
+      </button>
+      <div class="dropdown-content-2">
+        <a href="#">Free Trial Questions</a>
+        <a href="#">Practice</a>
+        <a href="../../modules/">Modules</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="head-top">
+    <div class="logo">
+      <a href="../../index.html">
+        <img src="../../img/CMFASLogo.svg" alt="CMFAS Logo"></div>
+      </a>
+    <div class="header-info">
+      <a class="header-a" href="#">Free Trial Questions</a>
+      <a class="header-a" href="#">Practice</a>
+      <a class="header-a" href="../../modules/">Modules</a>
+      <div class="dropdown-parent">
+        <div class="dropdown">
+          <button><i class="fa-solid fa-user"></i></button>
+          <div class="dropdown-content">
+            <a href="../dashboard/">Dashboard</a>
+            <a href="#">Subscription</a>
+            <a href="#">Settings</a>
+            <a href="#">Profile</a>
+            <a href="../../account/login/">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- End Header -->
+
+<!-- Login -->
+<section class="home">
+    <div class="form_container">
+        <!-- Login Form -->
+        <div class="form login_form">
+            <h2>Login</h2>
+            <div class="input_box">
+                <input id="email" type="email" placeholder="Enter your email" required />
+                <i class="uil uil-envelope-alt email"></i>
+            </div>
+            <div class="input_box">
+                <input id="password" type="password" placeholder="Enter your password" required />
+                <i class="uil uil-lock password"></i>
+                <i class="uil uil-eye-slash pw_hide"></i>
+            </div>
+            <div class="option_field">
+                <span class="checkbox">
+                    <input type="checkbox" id="remember" />
+                    <label for="remember">Remember me</label>
+                </span>
+                <a href="#" class="forgot_pw">Forgot password?</a>
+            </div>
+            <button id="loginButton" class="button">Login Now</button>
+            <div class="login_signup">Don't have an account? <a href="../create-account/" id="signup">Signup</a></div>
+        </div>
+        <!-- End Login Form -->
+    </div>
+</section>
+<!-- End Login -->
+
+<script
+      src="https://kit.fontawesome.com/75cb04a6d4.js"
+      crossorigin="anonymous"
+    ></script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyD8Te-4z4I1Ch4x4k0LQRe-67FfGJmq8rk",
+    authDomain: "cmfas-8ed61.firebaseapp.com",
+    projectId: "cmfas-8ed61",
+    storageBucket: "cmfas-8ed61.appspot.com",
+    messagingSenderId: "67363622843",
+    appId: "1:67363622843:web:15ac4a9e5d216072d7be9e",
+    measurementId: "G-7NJL4QTFYY"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth();
+
+  const loginButton = document.getElementById('loginButton');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+
+  loginButton.addEventListener('click', function() {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log('User logged in:', user);
+        // Redirect user after successful login
+        window.location.href = "../dashboard";
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error('Error:', errorMessage);
+        alert('Incorrect User Info')
+        // Display error message to the user
+      });
+  });
+</script>
+
+</body>
+</html>
